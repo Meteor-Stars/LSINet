@@ -251,6 +251,7 @@ def main(seed_cur, pred_l):
 
     args.record=True
     args.c_in=args.enc_in
+    args.c_out = args.enc_in
     args.context_window=args.seq_len
     args.target_window=args.pred_len
     args.is_training = True
