@@ -179,7 +179,7 @@ class MultiheadSIM(nn.Module):
         self.d_v=args.d_v
         self.timeinvariant = TimeInvariant(self.PatchNum, dropout)
         self.timeupdating = TimeUpdating(self.PatchNum, dropout)
-        # proj_dropout = dropout
+
         self.W_V = nn.Sequential(nn.Linear(args.d_model, self.d_v * args.n_heads,bias=True), nn.Dropout(dropout))
         self.linear_align = nn.Sequential(nn.Linear(args.n_heads * self.d_v, args.d_model), nn.Dropout(dropout))
 
