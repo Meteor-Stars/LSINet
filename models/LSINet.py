@@ -171,10 +171,8 @@ class MultiheadSIM(nn.Module):
                                   nn.Linear(d_ff, d_ff2),
                                 nn.Linear(d_ff2, self.args.d_model))
 
-        self.sparse_k = int(self.PatchNum*self.PatchNum*args.sparse_rate) #0.01 0.05 0.15   0.95 0.3 0.2
+        self.sparse_k = int(self.PatchNum*self.PatchNum*args.sparse_rate)
         self.connection_pre=SSConnectionLearning(args,PatchNum,self.sparse_k )
-        # self.connection_pre_embed = SSConnectionLearning(args, args.d_model, self.sparse_k)
-        # self.knn_metric = 'cosine'
         self.bce_loss=torch.nn.BCELoss()
         self.self_attn = _MultiheadAttention(args.d_model, args.n_heads_sam, args.d_model, args.d_model, attn_dropout=0,
                                              proj_dropout=0, res_attention=False)
