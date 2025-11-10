@@ -1,10 +1,8 @@
 from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
-from models import TimeMixer,PatchTST,PathFormer,PatchTST_ScaleFormer,NHits_Scaleformer,Autoformer_Scaleformer,FiLM,DLinear,NLinear,LSINet
+from models import LSINet
 from utils.tools import EarlyStopping, adjust_learning_rate, visual
 from utils.metrics import metric
-from transformers import PatchTSMixerConfig as CI_TSmixer_Config
-from transformers import PatchTSMixerForPrediction as CI_TSmixer
 import numpy as np
 import torch
 import torch.nn as nn
@@ -51,39 +49,12 @@ class Exp_Main(Exp_Basic):
         self.mv = moving_avg()
     def _build_model(self):
         model_dict = {
-            'DLinear': DLinear,
-            'NLinear': NLinear,
-            'TimeMixer':TimeMixer,
-            'CI_TSmixer':CI_TSmixer,
-            'PatchTST':PatchTST,
-            'FiLM':FiLM,
-            'PatchTST_ScaleFormer':PatchTST_ScaleFormer,
-            'Autoformer_Scaleformer':Autoformer_Scaleformer,
-            'NHits_Scaleformer':NHits_Scaleformer,
-            'Pathformer':PathFormer,
             'LSINet': LSINet,
         }
 
-        if self.args.model =='CI_TSmixer':
-            config = CI_TSmixer_Config(
-                context_length=self.args.seq_len,
-                prediction_length=self.args.pred_len,
-                patch_length=self.args.patch_len, #16 self.args.patch_len
-                num_input_channels=self.args.enc_in,
-                patch_stride=self.args.stride, #8 self.args.stride
-                d_model=self.args.d_model,
-                num_layers=self.args.num_layers,
-                expansion_factor=2,
-                dropout=0.2,
-                head_dropout=0.2,
-                mode="common_channel",
-                scaling="std",
-            )
-            model = CI_TSmixer(config)
-        else:
-            model = model_dict[self.args.model].Model(configs=self.args).float()
-            if self.args.use_multi_gpu and self.args.use_gpu:
-                model = nn.DataParallel(model, device_ids=self.args.device_ids)
+        model = model_dict[self.args.model].Model(configs=self.args).float()
+        if self.args.use_multi_gpu and self.args.use_gpu:
+            model = nn.DataParallel(model, device_ids=self.args.device_ids)
         return model
 
     def _get_data(self, flag):
@@ -115,18 +86,8 @@ class Exp_Main(Exp_Basic):
                 dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
                 dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
                 # encoder - decoder
-                if self.args.model=='CI_TSmixer':
-                    outputs_all = self.model(batch_x)
-                    outputs=outputs_all[0]
-                elif self.args.model in self.args.scaleformers:
-                    try:
-                        outputs_all = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                    except:
-                        outputs_all = self.model(batch_x)
-                    outputs = outputs_all[-1]
-                elif self.args.model == 'Pathformer':
-                    outputs, balance_loss = self.model(batch_x)
-                elif self.args.model=='LSINet':
+
+                if self.args.model=='LSINet':
                     outputs,loss_inf_all=self.model(batch_x)
                     for k in loss_inf_all.keys():
                         connection_matrix_sparse_rate.setdefault(k, []).append(loss_inf_all['sparse_rate'].item())

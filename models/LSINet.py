@@ -9,7 +9,7 @@ from torch import Tensor
 import torch.nn.functional as F
 import numpy as np
 import torch.nn.functional as f
-from layers.PatchTST_layers import *
+from layers.common_layers import *
 from layers.RevIN import RevIN
 from sklearn.neighbors import kneighbors_graph
 # Cell
