@@ -1,12 +1,36 @@
-# LSINet
+# A Lightweight Sparse Interaction Network for Time Series Forecasting (LSINet,AAAI2025)
 
-Our experimental environments involve Pytorch 1.12.1 and Numpy 1.22.4. 
+## Motivation 
+
+One the one hand, as shown in Figure 1, considering the most learned lower scores are redundant and ineffective, using SAM to find the small part of important interactions is too computationally expensive. Hence, we introduce a sparse Bernoulli distribution to directly predict the latent sparse pairwise interactions between time steps, replacing the standard Q–K–V computation.
+
+On the other hand, We also empirically observe the repeated interaction patterns in the self-attention heatmap, as shown in Figure 2. On the weather dataset, through the heatmap of a single variable (e.g., air pressure in Figure 2(a)) with different sample batches, we observe important temporal interactions (the most highlighted areas) always repeatedly occur along the diagonal of the heatmap. This phenomenon also exists across variables (Figure 2(a), (b), and (c)), motivating us to learn a shared attention matrix and design a time-invariant module to capture temporal dependencies.
 
 
-## Downloading Datasets
-  You can download the public datasets used in our paper from https://drive.google.com/drive/folders/1PPLsAoDbv4WcoXDp-mm4LFxoKwewnKxX. The downloaded files e.g., "ETTh1.csv",  should be placed at the "dataset" folder. These datasets are extensively used for evaluating performance of various time series forecasting methods.
-  
-## Reproducing Paper Results
-We have provided the experimental run scripts for LSINet and baseline models (CI-TSmixer, FiLM, DLinear, PatchTST, TimeMixer, Scaleformer, Pathformer, and FiLM) on the public datasets. The corresponding model names and forecasting tasks are included in the script names. 
-The hyperparameters used for experiments of different methods have been set in their respective scripts to reproduce the experimental results of the paper, e.g., running the script "Run_LSINet_TSF (Ours).py" can reprpduce the paper results of our LSINet.
-  
+<img src="figs/motivation.jpg" alt="替代文本" width="auto" height="350">
+
+
+
+
+
+## Overview
+
+We propose a Lightweight Sparse Interaction Network (LSINet) for TSF task. Inspired by the sparsity of self-attention, we propose a Multihead Sparse Interaction Mechanism (MSIM). Different from self-attention, MSIM learns the important connections between time steps through sparsity-induced Bernoulli distribution to capture temporal dependencies for TSF. The sparsity is ensured by the proposed self-adaptive regularization loss. Moreover, we observe the shareability of temporal interactions and propose to perform Shared Interaction Learning (SIL) for MSIM to further enhance efficiency and improve convergence. LSINet is a linear model comprising only MLP structures with low overhead and equipped with explicit temporal interaction mechanisms.
+
+<img src="figs/framework_LSINet.jpg" alt="替代文本" width="auto" height="250">
+
+
+## Reference
+```
+  @inproceedings{zhang2025lightweight,
+  title={A Lightweight Sparse Interaction Network for Time Series Forecasting},
+  author={Zhang, Xu and Wang, Qitong and Wang, Peng and Wang, Wei},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={39},
+  number={12},
+  pages={13304--13312},
+  year={2025}
+}
+```
+
+
