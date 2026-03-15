@@ -235,6 +235,10 @@ def main(pred_l):
         args.patch_len=int(args.seq_len / args.maximum_patch_num)*2
     args.is_training=1
 
+    if args.seq_len==96:
+        args.maximum_patch_num = 32
+        args.stride=int(args.seq_len / args.maximum_patch_num)
+        args.patch_len=int(args.seq_len / args.maximum_patch_num)*2
 
     args.des='Exp'
     args.itr=1
