@@ -242,8 +242,8 @@ def main(pred_l):
 
     args.record=True
     args.c_in=args.enc_in
-    args.context_window=args.seq_len
-    args.target_window=args.pred_len
+    args.seq_len=args.seq_len
+    args.pred_len=args.pred_len
     args.is_training = True
     print('Args in experiment:')
     if args.data_type == 'electricity':
