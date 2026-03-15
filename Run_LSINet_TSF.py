@@ -234,7 +234,7 @@ def main(pred_l):
         args.stride=int(args.seq_len / args.maximum_patch_num)
         args.patch_len=int(args.seq_len / args.maximum_patch_num)*2
     args.is_training=1
-
+    ##Add Recommended parameters for input length 96
     if args.seq_len==96:
         args.resdual_block=True
         args.maximum_patch_num = 32
